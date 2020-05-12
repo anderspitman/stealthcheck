@@ -5,10 +5,7 @@ import (
         "log"
         "encoding/json"
         "io/ioutil"
-        "os"
         "os/exec"
-        "os/signal"
-        "sync"
         "time"
         "flag"
         "path"
@@ -89,18 +86,4 @@ func runFailCommand(check *CheckConfig) {
         if err != nil {
                 log.Println("Fail command failed:", check.FailCommand)
         }
-}
-
-func waitForCtrlC() {
-        // copied from https://jjasonclark.com/waiting_for_ctrl_c_in_golang/
-        var end_waiter sync.WaitGroup
-        end_waiter.Add(1)
-        var signal_channel chan os.Signal
-        signal_channel = make(chan os.Signal, 1)
-        signal.Notify(signal_channel, os.Interrupt)
-        go func() {
-            <-signal_channel
-            end_waiter.Done()
-        }()
-        end_waiter.Wait()
 }
