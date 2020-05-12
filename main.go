@@ -61,7 +61,7 @@ func main() {
 
 func startJob(check *CheckConfig) {
         for {
-                command := exec.Command("sh", "-c", check.CheckCommand)
+                command := exec.Command("bash", "-c", check.CheckCommand)
                 _, err := command.Output()
                 if err != nil {
                         log.Println("Check failed:", check.CheckCommand)
@@ -81,7 +81,7 @@ func validateConfig(config *ChecksConfig) {
 }
 
 func runFailCommand(check *CheckConfig) {
-        command := exec.Command("sh", "-c", check.FailCommand)
+        command := exec.Command("bash", "-c", check.FailCommand)
         err := command.Start()
         if err != nil {
                 log.Println("Fail command failed:", check.FailCommand)
