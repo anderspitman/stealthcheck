@@ -85,7 +85,7 @@ func validateConfig(config *ChecksConfig) {
 
 func runFailCommand(check *CheckConfig) {
         command := exec.Command("sh", "-c", check.FailCommand)
-        _, err := command.Output()
+        err := command.Start()
         if err != nil {
                 log.Println("Fail command failed:", check.FailCommand)
         }
