@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
         "log"
         "encoding/json"
         "io/ioutil"
@@ -9,6 +10,8 @@ import (
         "os/signal"
         "sync"
         "time"
+        "flag"
+        "path"
 )
 
 type ChecksConfig struct {
@@ -23,7 +26,12 @@ type CheckConfig struct {
 }
 
 func main() {
-        checksFilePath := "checks.json"
+        log.Println("Starting up")
+        port := flag.String("port", "8484", "Port")
+        dir := flag.String("dir", "./", "Directory")
+        flag.Parse()
+
+        checksFilePath := path.Join(*dir, "checks.json")
         checksFile, err := ioutil.ReadFile(checksFilePath)
         if err != nil {
                 log.Fatal(err)
@@ -43,7 +51,14 @@ func main() {
                 go startJob(check)
         }
 
-        waitForCtrlC()
+	handler := func(w http.ResponseWriter, r *http.Request) {
+                // returns HTTP 200 by default
+        }
+
+        err = http.ListenAndServe(":"+*port, http.HandlerFunc(handler))
+	if err != nil {
+		log.Println(err)
+	}
 }
 
 
