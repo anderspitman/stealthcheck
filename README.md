@@ -1,7 +1,14 @@
-stealthcheck is a dead-simple service monitoring tool. Everything is based off
-shell commands shoved into a json config file. For each service, you run a
-check command at a given interval. If the command returns anything other than
-0, run the fail command.
+stealthcheck is a dead-simple service monitoring tool in <150 lines of code
+with no dependencies other than Go. It's so simple you probably should write
+your own instead of using it.
+
+It provides an easy way to set up health checks, automatic restarts, and email
+alerts for failed checks. It has basic logging, but it will probably improve in
+the future.
+
+Everything is based off shell commands shoved into a json config file. For each
+service, you run a check command at a given interval. If the command returns
+anything other than 0, run the fail command.
 
 
 # Who watches the watchers?
