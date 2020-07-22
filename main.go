@@ -14,6 +14,7 @@ import (
 )
 
 type Config struct {
+        AlertEmails []string  `json:"alert_emails"`
         Smtp *SmtpConfig
 }
 
@@ -34,7 +35,7 @@ type CheckConfig struct {
         CheckCommand string `json:"check_command"`
         SuccessCommand string `json:"success_command"`
         FailCommand string `json:"fail_command"`
-        AlertEmail string  `json:"alert_email"`
+        AlertEmails []string  `json:"alert_emails"`
 }
 
 func main() {
@@ -96,8 +97,10 @@ func startJob(config *Config, check *CheckConfig) {
                         log.Println("Check failed:", check.CheckCommand)
                         go runFailCommand(check)
 
-                        if len(check.AlertEmail) > 0 {
-                                sendEmail(config.Smtp, check.AlertEmail, check.CheckCommand)
+                        if len(check.AlertEmails) > 0 {
+                                sendEmails(config.Smtp, check.AlertEmails, check.CheckCommand)
+                        } else if len(config.AlertEmails) > 0 {
+                                sendEmails(config.Smtp, config.AlertEmails, check.CheckCommand)
                         }
                 }
 
@@ -113,7 +116,14 @@ func validateChecks(checksConfig *ChecksConfig) {
         }
 }
 
+func sendEmails(smtpConfig *SmtpConfig, emails []string, command string) {
+        for _, email := range emails {
+                sendEmail(smtpConfig, email, command)
+        }
+}
+
 func sendEmail(smtpConfig *SmtpConfig, email string, command string) {
+        log.Println("Alerting " + email)
         auth := smtp.PlainAuth("", smtpConfig.Username, smtpConfig.Password, smtpConfig.Server)
         to := []string{email}
 	msg := []byte(fmt.Sprintf("To: %s\r\n", email) +
