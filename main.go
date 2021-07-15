@@ -141,7 +141,7 @@ func sendEmail(smtpConfig *SmtpConfig, email string, command string) {
 
 func runFailCommand(check *CheckConfig) {
         command := exec.Command("bash", "-c", check.FailCommand)
-        err := command.Start()
+        err := command.Run()
         if err != nil {
                 log.Println("Fail command failed:", check.FailCommand)
         }
